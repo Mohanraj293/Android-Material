@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.icu.text.CaseMap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -8,6 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -57,22 +59,17 @@ class MainActivity : AppCompatActivity() {
         navView = findViewById(R.id.navView)
 
         // Call setNavigationItemSelectedListener on the NavigationView to detect when items are clicked
-        navView.setNavigationItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
+        navView.setNavigationItemSelectedListener {
+            it.isChecked=true
+            when (it.itemId) {
                 R.id.item1 -> {
-                    Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show()
-                    drawerLayout.close()
-                    true
+                    replaceFragment(HomeFragment(),it.title.toString())
                 }
                 R.id.item2 -> {
-                    Toast.makeText(this, "Gallery", Toast.LENGTH_SHORT).show()
-                    drawerLayout.close()
-                    true
+                    replaceFragment(GalleryFragment(),it.title.toString())
                 }
                 R.id.item3 -> {
-                    Toast.makeText(this, "Slide show", Toast.LENGTH_SHORT).show()
-                    drawerLayout.close()
-                    true
+                    replaceFragment(SettingsFragment(),it.title.toString())
                 }
             }
             drawerLayout.closeDrawer(GravityCompat.START)
@@ -95,5 +92,13 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
+    private fun replaceFragment(fragment: Fragment,title: String){
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.frameLayout,fragment)
+        fragmentTransaction.commit()
+        drawerLayout.close()
+        setTitle(title)
     }
 }
